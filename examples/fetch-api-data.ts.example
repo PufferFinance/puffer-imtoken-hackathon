@@ -1,0 +1,56 @@
+/**
+ * Example: Fetch data from the Puffer Hackathon API
+ *
+ * This example shows how to use the key-protected API endpoints
+ * to get pufETH rates, vault APYs, TVL, and token prices.
+ */
+
+const API_BASE = 'https://<deployed-url>';
+const API_KEY = 'YOUR_API_KEY';
+
+const headers = {
+  'x-api-key': API_KEY,
+};
+
+async function fetchPufEthRate() {
+  const res = await fetch(`${API_BASE}/pufeth/rate`, { headers });
+  const data = await res.json();
+  console.log('pufETH Rate:', data);
+  // { pufEthPerEth: "0.959", ethPerPufEth: "1.042", totalAssets: "...", totalSupply: "..." }
+}
+
+async function fetchVaultApys() {
+  const res = await fetch(`${API_BASE}/vaults/apy`, { headers });
+  const data = await res.json();
+  console.log('All Vault APYs:', data);
+  // { data: [{ token_address: "0x...", lookback_days: 30, apy: 5.2 }, ...], timestamp: "..." }
+}
+
+async function fetchProtocolTvl() {
+  const res = await fetch(`${API_BASE}/protocol/tvl`, { headers });
+  const data = await res.json();
+  console.log('Protocol TVL:', data);
+  // { lrt_total_usd: "...", unifi_total_usd: "...", apy: "3.45", ... }
+}
+
+async function fetchTokenPrices() {
+  // pufETH and WETH prices - separate addresses with %
+  const pufETH = '0xd9a442856c234a39a81a089c06451ebaa4306a72';
+  const WETH = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
+  const res = await fetch(
+    `${API_BASE}/tokens/prices?addresses=${pufETH}%${WETH}`,
+    { headers },
+  );
+  const data = await res.json();
+  console.log('Token Prices:', data);
+  // { "0x...pufETH": { usd: 2650.50 }, "0x...WETH": { usd: 2540.25 } }
+}
+
+async function main() {
+  await fetchPufEthRate();
+  await fetchVaultApys();
+  await fetchProtocolTvl();
+  await fetchTokenPrices();
+}
+
+main().catch(console.error);

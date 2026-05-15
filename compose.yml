@@ -1,8 +1,6 @@
 services:
-  puffer-backend-service:
+  puffer-imtoken-hackathon:
     build: .
-    environment:
-      PORT: ${PORT}
-      SENTRY_DSN: ${SENTRY_DSN}
+    env_file: .env
     ports:
       - '${PORT}:${PORT}'

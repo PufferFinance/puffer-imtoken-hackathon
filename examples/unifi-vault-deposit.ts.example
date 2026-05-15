@@ -1,0 +1,66 @@
+/**
+ * Example: Deposit into a UniFi Vault
+ *
+ * This example shows how to deposit WETH into the unifiETH vault
+ * using the Puffer SDK. The same pattern works for unifiUSD, unifiBTC, and pufETHs.
+ *
+ * Install: npm install @pufferfinance/puffer-sdk
+ */
+import {
+  PufferClientHelpers,
+  PufferClient,
+  Chain,
+  UnifiToken,
+  Token,
+} from '@pufferfinance/puffer-sdk';
+
+async function depositToUnifiVault() {
+  const walletClient = PufferClientHelpers.createWalletClient({
+    chain: Chain.Mainnet,
+    provider: window.ethereum,
+  });
+
+  const publicClient = PufferClientHelpers.createPublicClient({
+    chain: Chain.Mainnet,
+    rpcUrls: ['https://eth.llamarpc.com'],
+  });
+
+  const pufferClient = new PufferClient(
+    Chain.Mainnet,
+    walletClient,
+    publicClient,
+  );
+
+  const [walletAddress] = await pufferClient.requestAddresses();
+
+  // --- Deposit WETH into unifiETH vault ---
+
+  const depositAmount = BigInt(1e18); // 1 WETH
+
+  const { transact, estimate } = await pufferClient.nucleusTeller
+    .withToken(UnifiToken.unifiETH)
+    .deposit({
+      account: walletAddress,
+      token: Token.WETH,
+      unifiToken: UnifiToken.unifiETH,
+      amount: depositAmount,
+      minimumMint: BigInt(0), // Set to 0 for simplicity; use slippage protection in production
+      isPreapproved: false,
+    });
+
+  const gasEstimate = await estimate();
+  console.log('Estimated gas:', gasEstimate.toString());
+
+  const txHash = await transact();
+  console.log('Deposit tx:', txHash);
+
+  // --- Check vault balance ---
+
+  const vaultBalance = await pufferClient.nucleusBoringVault
+    .withToken(UnifiToken.unifiETH)
+    .balanceOf(walletAddress);
+
+  console.log('unifiETH balance:', vaultBalance.toString());
+}
+
+depositToUnifiVault().catch(console.error);

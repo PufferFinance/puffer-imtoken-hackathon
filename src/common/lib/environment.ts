@@ -6,16 +6,15 @@ dotenv.config({ override: true });
 export const env = {
   // Application
   PORT: process.env.PORT ?? 8080,
-  BASE_URL: process.env.BASE_URL ?? '/puffer-backend-service',
+  BASE_URL: process.env.BASE_URL ?? '/',
   ENVIRONMENT: process.env.ENVIRONMENT ?? 'development',
   SERVICE_API_KEY: process.env.SERVICE_API_KEY!,
 
-  // Integrations
-  SENTRY_DSN: process.env.SENTRY_DSN,
-  DATABASE_URL: process.env.DATABASE_URL!,
+  // Puffer BFF
+  PUFFER_BFF_URL: process.env.PUFFER_BFF_URL!,
 
   // Blockchain
-  ETH_RPC_URL: process.env.ETH_RPC_URL! || 'mockRpcUrl',
+  ETH_RPC_URL: process.env.ETH_RPC_URL!,
 } as const;
 
 // Validate all env vars are defined

@@ -1,0 +1,62 @@
+/**
+ * Example: Stake ETH to receive pufETH
+ *
+ * This example shows how to deposit ETH into the PufferVault
+ * and receive pufETH in return using the Puffer SDK.
+ *
+ * Install: npm install @pufferfinance/puffer-sdk
+ */
+import {
+  PufferClientHelpers,
+  PufferClient,
+  Chain,
+} from '@pufferfinance/puffer-sdk';
+
+async function stakeEth() {
+  // 1. Create clients (browser environment with MetaMask/imToken)
+  const walletClient = PufferClientHelpers.createWalletClient({
+    chain: Chain.Mainnet,
+    provider: window.ethereum,
+  });
+
+  const publicClient = PufferClientHelpers.createPublicClient({
+    chain: Chain.Mainnet,
+    rpcUrls: ['https://eth.llamarpc.com'],
+  });
+
+  const pufferClient = new PufferClient(
+    Chain.Mainnet,
+    walletClient,
+    publicClient,
+  );
+
+  // 2. Get the connected wallet address
+  const [walletAddress] = await pufferClient.requestAddresses();
+  console.log('Connected wallet:', walletAddress);
+
+  // 3. Check current pufETH rate
+  const rate = await pufferClient.vault.getPufETHRate();
+  console.log('pufETH per ETH:', rate.toString());
+
+  // 4. Check existing pufETH balance
+  const balanceBefore = await pufferClient.vault.balanceOf(walletAddress);
+  console.log('pufETH balance before:', balanceBefore.toString());
+
+  // 5. Deposit 1 ETH to get pufETH
+  const depositAmount = BigInt(1e18); // 1 ETH in wei
+  const { transact, estimate } = pufferClient.vault.depositETH(walletAddress);
+
+  // 6. Estimate gas first
+  const gasEstimate = await estimate();
+  console.log('Estimated gas:', gasEstimate.toString());
+
+  // 7. Execute the deposit
+  const txHash = await transact(depositAmount);
+  console.log('Transaction hash:', txHash);
+
+  // 8. Check balance after
+  const balanceAfter = await pufferClient.vault.balanceOf(walletAddress);
+  console.log('pufETH balance after:', balanceAfter.toString());
+}
+
+stakeEth().catch(console.error);
