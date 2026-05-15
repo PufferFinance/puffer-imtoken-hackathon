@@ -5,7 +5,7 @@
  * to get pufETH rates, vault APYs, TVL, and token prices.
  */
 
-const API_BASE = 'https://<deployed-url>';
+const API_BASE = 'https://api-v2.puffer.fi/imtoken-hackathon';
 
 async function fetchPufEthRate() {
   const res = await fetch(`${API_BASE}/pufeth/rate`);

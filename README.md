@@ -16,7 +16,7 @@ Developer API and resources for the [imToken 10th Anniversary AI Co-Creation Cam
 
 ## API Reference
 
-**Base URL:** `https://<deployed-url>`
+**Base URL:** `https://api-v2.puffer.fi/imtoken-hackathon`
 
 All endpoints are public. Rate limited to 100 requests per 15 minutes per IP.
 
@@ -38,7 +38,7 @@ Interactive API docs are available at `/docs` (Swagger UI).
 ### Example Request
 
 ```bash
-curl https://<deployed-url>/pufeth/rate
+curl https://api-v2.puffer.fi/imtoken-hackathon/pufeth/rate
 ```
 
 ```json
