@@ -1,33 +1,28 @@
 /**
  * Example: Fetch data from the Puffer Hackathon API
  *
- * This example shows how to use the key-protected API endpoints
+ * This example shows how to use the public API endpoints
  * to get pufETH rates, vault APYs, TVL, and token prices.
  */
 
 const API_BASE = 'https://<deployed-url>';
-const API_KEY = 'YOUR_API_KEY';
-
-const headers = {
-  'x-api-key': API_KEY,
-};
 
 async function fetchPufEthRate() {
-  const res = await fetch(`${API_BASE}/pufeth/rate`, { headers });
+  const res = await fetch(`${API_BASE}/pufeth/rate`);
   const data = await res.json();
   console.log('pufETH Rate:', data);
   // { pufEthPerEth: "0.959", ethPerPufEth: "1.042", totalAssets: "...", totalSupply: "..." }
 }
 
 async function fetchVaultApys() {
-  const res = await fetch(`${API_BASE}/vaults/apy`, { headers });
+  const res = await fetch(`${API_BASE}/vaults/apy`);
   const data = await res.json();
   console.log('All Vault APYs:', data);
   // { data: [{ token_address: "0x...", lookback_days: 30, apy: 5.2 }, ...], timestamp: "..." }
 }
 
 async function fetchProtocolTvl() {
-  const res = await fetch(`${API_BASE}/protocol/tvl`, { headers });
+  const res = await fetch(`${API_BASE}/protocol/tvl`);
   const data = await res.json();
   console.log('Protocol TVL:', data);
   // { lrt_total_usd: "...", unifi_total_usd: "...", apy: "3.45", ... }
@@ -39,7 +34,6 @@ async function fetchTokenPrices() {
   const WETH = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
   const res = await fetch(
     `${API_BASE}/tokens/prices?addresses=${pufETH}%${WETH}`,
-    { headers },
   );
   const data = await res.json();
   console.log('Token Prices:', data);

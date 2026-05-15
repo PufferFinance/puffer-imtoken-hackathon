@@ -8,8 +8,6 @@ export const env = {
   PORT: process.env.PORT ?? 8080,
   BASE_URL: process.env.BASE_URL ?? '/',
   ENVIRONMENT: process.env.ENVIRONMENT ?? 'development',
-  SERVICE_API_KEY: process.env.SERVICE_API_KEY!,
-
   // Puffer BFF
   PUFFER_BFF_URL: process.env.PUFFER_BFF_URL!,
 

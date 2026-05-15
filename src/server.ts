@@ -15,7 +15,6 @@ import { logger } from './common/lib/logger';
 import { swaggerRouter } from './common/lib/swagger';
 import { errorMiddleware } from './middleware/error-middleware';
 import { requestLoggingMiddleware } from './middleware/request-logging-middleware';
-import { apiKeyMiddleware } from './middleware/api-key-middleware';
 import { rateLimitMiddleware } from './middleware/rate-limit-middleware';
 
 const app = express();
@@ -30,25 +29,19 @@ app.use(cors());
 app.use(helmet());
 app.use(pinoHttp({ logger }));
 app.use(requestLoggingMiddleware);
+app.use(rateLimitMiddleware);
 
 // Create a base router to handle the BASE_URL prefix.
 const baseRouter = express.Router();
 
-// Public routes (no API key required)
+// Routes
 baseRouter.use('/health', healthRouter);
 baseRouter.use('/docs', swaggerRouter);
-
-// Protected routes (API key required)
-baseRouter.use('/pufeth', apiKeyMiddleware, rateLimitMiddleware, pufethRouter);
-baseRouter.use('/vaults', apiKeyMiddleware, rateLimitMiddleware, vaultsRouter);
-baseRouter.use(
-  '/protocol',
-  apiKeyMiddleware,
-  rateLimitMiddleware,
-  protocolRouter,
-);
-baseRouter.use('/tokens', apiKeyMiddleware, rateLimitMiddleware, tokensRouter);
-baseRouter.use('/gauges', apiKeyMiddleware, rateLimitMiddleware, gaugesRouter);
+baseRouter.use('/pufeth', pufethRouter);
+baseRouter.use('/vaults', vaultsRouter);
+baseRouter.use('/protocol', protocolRouter);
+baseRouter.use('/tokens', tokensRouter);
+baseRouter.use('/gauges', gaugesRouter);
 
 // Mount the base router with the BASE_URL prefix.
 app.use(env.BASE_URL, baseRouter);

@@ -4,7 +4,7 @@ Developer API and resources for the [imToken 10th Anniversary AI Co-Creation Cam
 
 ## What's Inside
 
-- **Public API** - Key-protected endpoints for pufETH rates, vault APYs, TVL, token prices, and gauge APR data
+- **Public API** - Endpoints for pufETH rates, vault APYs, TVL, token prices, and gauge APR data
 - **SDK examples** - Code snippets using `@pufferfinance/puffer-sdk` for staking, vault deposits, and on-chain reads
 - **Contract addresses** - All mainnet addresses for PufferVault, UniFi vaults, and key tokens
 
@@ -18,7 +18,7 @@ Developer API and resources for the [imToken 10th Anniversary AI Co-Creation Cam
 
 **Base URL:** `https://<deployed-url>`
 
-All data endpoints require an API key via the `x-api-key` header. Request your key in the campaign Discord channel.
+All endpoints are public. Rate limited to 100 requests per 15 minutes per IP.
 
 ### Endpoints
 
@@ -31,14 +31,14 @@ All data endpoints require an API key via the `x-api-key` header. Request your k
 | `/protocol/tvl`             | GET    | Protocol-wide TVL + pufETH staking APY            |
 | `/tokens/prices?addresses=` | GET    | USD prices for token addresses (separated by `%`) |
 | `/gauges/apr?identifier=`   | GET    | APR for a gauge/opportunity by contract address   |
-| `/health`                   | GET    | Health check (no auth required)                   |
+| `/health`                   | GET    | Health check                                      |
 
 Interactive API docs are available at `/docs` (Swagger UI).
 
 ### Example Request
 
 ```bash
-curl -H "x-api-key: YOUR_API_KEY" https://<deployed-url>/pufeth/rate
+curl https://<deployed-url>/pufeth/rate
 ```
 
 ```json
