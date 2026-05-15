@@ -1,0 +1,8 @@
+services:
+  puffer-backend-service:
+    build: .
+    environment:
+      PORT: ${PORT}
+      SENTRY_DSN: ${SENTRY_DSN}
+    ports:
+      - '${PORT}:${PORT}'

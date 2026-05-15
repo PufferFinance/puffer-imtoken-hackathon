@@ -1,0 +1,52 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_SERVICE_NAME: ${{ vars.AWS_SERVICE_NAME }}
+  AWS_ECS_CLUSTER: ${{ vars.AWS_ECS_CLUSTER }}
+
+jobs:
+  deploy:
+    environment: ${{ github.head_ref || github.ref_name }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon Elastic Container Registry
+        id: aws-ecr-identifier
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag and push Docker image to Amazon ECR
+        env:
+          AWS_ECR_REGISTRY: ${{ steps.aws-ecr-identifier.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker buildx build . -f ./Dockerfile \
+            -t $AWS_ECR_REGISTRY/$AWS_SERVICE_NAME:$IMAGE_TAG \
+            -t $AWS_ECR_REGISTRY/$AWS_SERVICE_NAME:latest
+          docker push $AWS_ECR_REGISTRY/$AWS_SERVICE_NAME:$IMAGE_TAG
+          docker push $AWS_ECR_REGISTRY/$AWS_SERVICE_NAME:latest
+
+      - name: Update Amazon ECS service
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          aws ecs update-service \
+          --cluster $AWS_ECS_CLUSTER \
+          --service $AWS_SERVICE_NAME \
+          --force-new-deployment \
+          --enable-execute-command \
+          --region $AWS_REGION
