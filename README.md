@@ -58,7 +58,7 @@ The [`@pufferfinance/puffer-sdk`](https://www.npmjs.com/package/@pufferfinance/p
 npm install @pufferfinance/puffer-sdk
 ```
 
-Full SDK docs: https://pufferfinance.github.io/puffer-sdk/
+Full SDK docs: [pufferfinance.github.io/puffer-sdk](https://pufferfinance.github.io/puffer-sdk/)
 
 ### Quick Examples
 
